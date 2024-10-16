@@ -1,0 +1,12 @@
+{
+    "id": "{2E8E4740-13B2-B795-3876-5A5A5DAB7320}",
+    "name": "MHC Importer",
+    "author": "Symcon GmbH",
+    "url": "https://symcon.de",
+    "compatibility": {
+        "version": "7.1"
+    },
+    "version": "1.0",
+    "build": 0,
+    "date": 0
+}
