@@ -102,13 +102,13 @@ declare(strict_types=1);
             $parenthesisCount = 0;
             $pathStr = $attributes['Ref'];
             $slashIndices = [0];
-            for ($i=0; $i < strlen($pathStr); $i++) {
+            for ($i=1; $i < strlen($pathStr) - 1; $i++) {
                 $char = $pathStr[$i];
                 if ($char == '(') {
                     $parenthesisCount++;
                 } elseif ($char == ')') {
                     $parenthesisCount--;
-                } elseif ($char == '/' && $parenthesisCount == 0) {
+                } elseif ($char == '/' && $parenthesisCount == 0 && $pathStr[$i - 1] != '/' && $pathStr[$i +1] != '/') {
                     $slashIndices[] = $i;
                 }
             }
