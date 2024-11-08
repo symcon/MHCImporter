@@ -1,34 +1,11 @@
 {
     "elements": [
         {
-            "type": "PopupButton",
-            "name": "Import",
-            "caption": "Import",
-            "popup": {
-                "caption": "Import",
-                "closeCaption": "Cancel",
-                "items": [
-                    {
-                        "type": "SelectFile",
-                        "name": "ImportFile",
-                        "caption": "Template",
-                        "extensions": ".xml",
-                        "onChange": "MHCI_UIValidateImport($id, $ImportFile);"
-                    },
-                    {
-                        "type": "Label",
-                        "name": "ImportHint",
-                        "caption": "Importing will overwrite the current configuration!"
-                    }
-                ],
-                "buttons": [
-                    {
-                        "caption": "Import",
-                        "name": "ImportStart",
-                        "onClick": "MHCI_UIImport($id, $ImportFile);"
-                    }
-                ]
-            }
+            "type": "SelectFile",
+            "name": "ImportFile",
+            "caption": "myHomeControl Project",
+            "extensions": ".xml",
+            "onChange": "MHCI_UIImport($id, $ImportFile);"
         }
     ],
     "actions": [
@@ -36,7 +13,7 @@
             "type": "Configurator",
             "name": "Configurator",
             "discoveryInterval": 300,
-            "caption": "My Home Control",
+            "caption": "Devices",
             "delete": false,
             "columns": [
                 {

@@ -2,5 +2,5 @@
 
 Folgende Module beinhaltet das MHC Importer Repository:
 
-- __My Home Control Importer__ ([Dokumentation](My%20Home%20Control%20Importer))  
-	Kurze Beschreibung des Moduls.
+- __myHomeControl Importer__ ([Dokumentation](My%20Home%20Control%20Importer))  
+	Das Modul ermöglicht es aus myHomeControl exportierte XML-Dateien in IP-Symcon zu importieren.

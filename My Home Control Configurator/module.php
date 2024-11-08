@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-    class MyHomeControlConfigurator extends IPSModule
+    class myHomeControlConfigurator extends IPSModule
     {
         public const GUID_MAP = [
             'PTMSwitchModule' => '{63484585-F8AD-4780-BAFD-3C0353641046}',
@@ -26,7 +26,7 @@ declare(strict_types=1);
         {
             //Never delete this line!
             parent::ApplyChanges();
-            if ($this->UIValidateImport($this->ReadPropertyString('ImportFile'))) {
+            if ($this->ReadPropertyString('ImportFile') != '') {
                 $this->UIImport($this->ReadPropertyString('ImportFile'));
             }
         }
@@ -34,13 +34,13 @@ declare(strict_types=1);
         public function GetConfigurationForm(): string
         {
             $data = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
-            if ($this->UIValidateImport($this->ReadPropertyString('ImportFile'))) {
+            if (($this->ReadPropertyString('ImportFile') != '')) {
                 $data['actions'][0]['values'] = $this->createConfiguratorValues($this->ReadPropertyString('ImportFile'));
             }
             return json_encode($data);
         }
 
-        public function UIValidateImport($File)
+        private function createConfiguratorValues(String $File)
         {
             if (strlen($File) == 0) {
                 return false;
@@ -48,14 +48,9 @@ declare(strict_types=1);
             $xml = simplexml_load_string(base64_decode($File), null, LIBXML_NOCDATA);
             $array = json_decode(json_encode($xml), true);
             if (!array_key_exists('DeviceAddresses', $array)) {
-                return false;
+                return [];
             }
-            return true;
-        }
 
-        private function createConfiguratorValues(String $File)
-        {
-            $xml = simplexml_load_string(base64_decode($File), null, LIBXML_NOCDATA);
             $array = json_decode(json_encode($xml), true);
             $configurator = [];
             $id = 1;

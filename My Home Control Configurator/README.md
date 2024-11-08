@@ -1,5 +1,5 @@
-# My Home Control Importer
-Beschreibung des Moduls.
+# myHomeControl Importer
+Das Modul ermöglicht es aus myHomeControl exportierte XML-Dateien in IP-Symcon zu importieren.
 
 ### Inhaltsverzeichnis
 
@@ -13,7 +13,7 @@ Beschreibung des Moduls.
 
 ### 1. Funktionsumfang
 
-*
+* XML-Dateien aus myHomeControl importieren
 
 ### 2. Voraussetzungen
 
@@ -21,47 +21,28 @@ Beschreibung des Moduls.
 
 ### 3. Software-Installation
 
-* Über den Module Store das 'My Home Control Importer'-Modul installieren.
+* Über den Module Store das 'myHomeControl Importer'-Modul installieren.
 * Alternativ über das Module Control folgende URL hinzufügen
 
 ### 4. Einrichten der Instanzen in IP-Symcon
 
- Unter 'Instanz hinzufügen' kann das 'My Home Control Importer'-Modul mithilfe des Schnellfilters gefunden werden.  
+ Unter 'Instanz hinzufügen' kann das 'myHomeControl Importer'-Modul mithilfe des Schnellfilters gefunden werden.  
 	- Weitere Informationen zum Hinzufügen von Instanzen in der [Dokumentation der Instanzen](https://www.symcon.de/service/dokumentation/konzepte/instanzen/#Instanz_hinzufügen)
 
 __Konfigurationsseite__:
 
-Name     | Beschreibung
--------- | ------------------
-         |
-         |
+Name                  | Beschreibung
+--------------------- | ------------------
+myHomeControl Projekt | Hier wird die XML-Datei ausgewählt
 
 ### 5. Statusvariablen und Profile
 
-Die Statusvariablen/Kategorien werden automatisch angelegt. Das Löschen einzelner kann zu Fehlfunktionen führen.
-
-#### Statusvariablen
-
-Name   | Typ     | Beschreibung
------- | ------- | ------------
-       |         |
-       |         |
-
-#### Profile
-
-Name   | Typ
------- | -------
-       |
-       |
+Es werden keine Statusvariablen oder Profile angelegt.
 
 ### 6. Visualisierung
 
-Die Funktionalität, die das Modul in der Visualisierung bietet.
+Das Modul bietet keine Funktion in der Visualisierung.
 
 ### 7. PHP-Befehlsreferenz
 
-`boolean MHCI_BeispielFunktion(integer $InstanzID);`
-Erklärung der Funktion.
-
-Beispiel:
-`MHCI_BeispielFunktion(12345);`
+Das Modul bietet keine öffentlichen Funktionen.
