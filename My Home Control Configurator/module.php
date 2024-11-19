@@ -13,6 +13,7 @@ declare(strict_types=1);
         {
             //Never delete this line!
             parent::Create();
+
             $this->RegisterPropertyString('ImportFile', '');
         }
 
@@ -26,6 +27,7 @@ declare(strict_types=1);
         {
             //Never delete this line!
             parent::ApplyChanges();
+
             if ($this->ReadPropertyString('ImportFile') != '') {
                 $this->UIImport($this->ReadPropertyString('ImportFile'));
             }
@@ -149,13 +151,16 @@ declare(strict_types=1);
                                 'moduleID' => $guid,
                                 'location' => array_slice($path, 0, count($path) - 1),
                                 'configuration' => [
-                                    'DeviceID' => $attributes['Address'],
+                                    'DeviceID' => intval($attributes['Address']),
+                                    'Mode'     => 1, // Only required for Eltako Switch
                                 ],
                             ];
-                            $device['instanceID'] = $this->searchDevice($attributes['Address'], $guid);
+                            $device['instanceID'] = $this->searchDevice(intval($attributes['Address']), $guid);
                             if (array_key_exists('SensorAddr_hex', $attributes)) {
                                 $create['configuration']['ReturnID'] =$attributes['SensorAddr_hex'];
                             }
+                            // Override and make a nicer name
+                            $device['address'] = sprintf("%s (%d)", $attributes['Address_hex'], intval($attributes['Address']));
                             $device['create'] = $create;
                         }
                     break;
@@ -186,10 +191,8 @@ declare(strict_types=1);
 
         private function searchDevice($deviceID, $guid): int
         {
-            $connectionID = IPS_GetInstance($this->InstanceID);
             $ids = IPS_GetInstanceListByModuleID($guid);
             foreach ($ids as $id) {
-                $i = IPS_GetInstance($id);
                 if (IPS_GetProperty($id, 'DeviceID') == $deviceID) {
                     return $id;
                 }
