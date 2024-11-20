@@ -4,7 +4,7 @@ declare(strict_types=1);
     class myHomeControlConfigurator extends IPSModule
     {
         public const GUID_MAP = [
-            'PTMSwitchModule' => '{63484585-F8AD-4780-BAFD-3C0353641046}',
+            'PTMSwitchModule' => '{40C99CC9-EC04-49C8-BB9B-73E21B6FA265}',
             'Switch_1' => '{FD46DA33-724B-489E-A931-C00BFD0166C9}',
             'Dimmer_1' => '{48909406-A2B9-4990-934F-28B9A80CD079}',
             'Jalousie_1' =>  '{1463CAE7-C7D5-4623-8539-DD7ADA6E92A9}',
