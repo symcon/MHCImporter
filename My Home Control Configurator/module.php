@@ -128,7 +128,7 @@ declare(strict_types=1);
                 'instanceID' => 0,
             ];
             if (isset($attributes['FullAddress_hex'])) {
-                $device['baseID'] = $dechex(hexdec($attributes['FullAddress_hex']) & 0xFFFFFF80);
+                $device['baseID'] = dechex(hexdec($attributes['FullAddress_hex']) & 0xFFFFFF80);
             }
             $supported = array_key_exists($attributes['Type'], self::GUID_MAP);
             switch ($type) {
