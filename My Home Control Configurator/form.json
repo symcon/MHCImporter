@@ -17,6 +17,11 @@
             "delete": false,
             "columns": [
                 {
+                    "label": "BaseID",
+                    "name": "baseID",
+                    "width": "200px"
+                },
+                {
                     "label": "Address",
                     "name": "address",
                     "width": "200px"

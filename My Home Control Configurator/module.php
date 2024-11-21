@@ -127,17 +127,22 @@ declare(strict_types=1);
                 'type' => $attributes['Type'],
                 'instanceID' => 0,
             ];
+            if (isset($attributes['FullAddress_hex'])) {
+                $device['baseID'] = $dechex(hexdec($attributes['FullAddress_hex']) & 0xFFFFFF80);
+            }
             $supported = array_key_exists($attributes['Type'], self::GUID_MAP);
             switch ($type) {
                 case 'Sensor':
                     if ($supported) {
                         $guid = self::GUID_MAP[$attributes['Type']];
                         $device['create'] = [
-                            'moduleID' => $guid,
-                            'location' => array_slice($path, 0, count($path) - 1),
-                            'configuration' => [
-                                'DeviceID' => $attributes['Address_hex'],
-                            ],
+                            [
+                                'moduleID' => $guid,
+                                'location' => array_slice($path, 0, count($path) - 1),
+                                'configuration' => [
+                                    'DeviceID' => $attributes['Address_hex'],
+                                ],
+                            ]
                         ];
                         $device['instanceID'] = $this->searchDevice($attributes['Address_hex'], $guid);
                     }
@@ -157,7 +162,7 @@ declare(strict_types=1);
                             ];
                             $device['instanceID'] = $this->searchDevice(intval($attributes['Address']), $guid);
                             if (array_key_exists('SensorAddr_hex', $attributes)) {
-                                $create['configuration']['ReturnID'] =$attributes['SensorAddr_hex'];
+                                $create[0]['configuration']['ReturnID'] = $attributes['SensorAddr_hex'];
                             }
                             // Override and make a nicer name
                             $device['address'] = sprintf("%s (%d)", $attributes['Address_hex'], intval($attributes['Address']));
@@ -167,6 +172,21 @@ declare(strict_types=1);
 
                 default:
                     break;
+            }
+            if (isset($device['create'])) {
+                $fgw14 = isset($device['baseID']) && (hexdec($device['baseID']) & 0x00FFFFFF) === 0;
+                $gateway = [
+                        'name' => $fgw14 ? 'FGW14 Gateway' : 'LAN Gateway',
+                        'moduleID' => '{A52FEFE9-7858-4B8E-A96E-26E15CB944F7}', // EnOcean Gateway;
+                        'configuration' => [
+                            'GatewayMode' => $fgw14 ? 4 : 3 // LAN Gateway
+                        ]
+                    ];
+                if ($fgw14) {
+                    $gateway['configuration']['BaseID'] = $device['baseID'];
+                }
+                $device['create'][] = $gateway;
+                $this->SendDebug('Create', json_encode($device['create']), 0);
             }
 
             $configurator[] = $device;
