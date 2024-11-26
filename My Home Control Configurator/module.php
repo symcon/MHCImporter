@@ -128,7 +128,7 @@ declare(strict_types=1);
                 'instanceID' => 0,
             ];
             if (isset($attributes['FullAddress_hex'])) {
-                $device['baseID'] = dechex(hexdec($attributes['FullAddress_hex']) & 0xFFFFFF80);
+                $device['baseID'] = strtoupper(dechex(hexdec($attributes['FullAddress_hex']) & 0xFFFFFF80));
             }
             $supported = array_key_exists($attributes['Type'], self::GUID_MAP);
             switch ($type) {
@@ -153,13 +153,17 @@ declare(strict_types=1);
                             $guid = self::GUID_MAP[$attributes['Type']];
                             $create =
                             [
-                                'moduleID' => $guid,
-                                'location' => array_slice($path, 0, count($path) - 1),
-                                'configuration' => [
-                                    'DeviceID' => intval($attributes['Address']),
-                                    'Mode'     => 1, // Only required for Eltako Switch
-                                ],
+                                [
+                                    'moduleID' => $guid,
+                                    'location' => array_slice($path, 0, count($path) - 1),
+                                    'configuration' => [
+                                        'DeviceID' => intval($attributes['Address']),
+                                    ],
+                                ]
                             ];
+                            if ($guid == '{FD46DA33-724B-489E-A931-C00BFD0166C9}' /*Eltako Switch*/) {
+                                $create[0]['configuration']['Mode'] = 1;
+                            }
                             $device['instanceID'] = $this->searchDevice(intval($attributes['Address']), $guid);
                             if (array_key_exists('SensorAddr_hex', $attributes)) {
                                 $create[0]['configuration']['ReturnID'] = $attributes['SensorAddr_hex'];
@@ -174,7 +178,7 @@ declare(strict_types=1);
                     break;
             }
             if (isset($device['create'])) {
-                $fgw14 = isset($device['baseID']) && (hexdec($device['baseID']) & 0x00FFFFFF) === 0;
+                $fgw14 = isset($device['baseID']) && (hexdec($device['baseID']) & 0x0000FFFF) === 0;
                 $gateway = [
                         'name' => $fgw14 ? 'FGW14 Gateway' : 'LAN Gateway',
                         'moduleID' => '{A52FEFE9-7858-4B8E-A96E-26E15CB944F7}', // EnOcean Gateway;
