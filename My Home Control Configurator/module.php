@@ -81,7 +81,6 @@ declare(strict_types=1);
             // Try fixing missing baseIDs
             foreach ($configurator as &$device) {
                 if (isset($device['address']) && !isset($device['baseID'])) {
-                    $this->SendDebug('NO BASEID', json_encode($device), 0);
                     $parentID = $device['parent'];
                     $baseID = false;
                     while ($parentID != 0 && $baseID === false) {
