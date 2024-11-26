@@ -196,7 +196,13 @@ declare(strict_types=1);
                             }
                             $device['instanceID'] = $this->searchDevice(intval($attributes['Address']), $guid);
                             if (array_key_exists('SensorAddr_hex', $attributes)) {
-                                $create[0]['configuration']['ReturnID'] = $attributes['SensorAddr_hex'];
+                                $returnID = $attributes['SensorAddr_hex'];
+                                if (strpos(substr($attributes['SensorAddr_hex'], 0, 4), substr($attributes['FullAddress_hex'], 0, 4)) !== false) {
+                                    // We only want to use the last 2 characters from SensorAddr_hex
+                                    // EF0010XX -> 000000XX
+                                    $returnID = '000000' . substr($returnID, strlen($returnID) - 2, 4);
+                                }
+                                $create[0]['configuration']['ReturnID'] = $returnID;
                             }
                             // Override and make a nicer name
                             $device['address'] = sprintf("%s (%d)", $attributes['Address_hex'], intval($attributes['Address']));
