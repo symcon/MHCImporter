@@ -66,6 +66,33 @@ declare(strict_types=1);
             foreach ($array['DeviceAddresses']['Actuator'] as $actuator) {
                 $this->createDevice($configurator, $actuator['@attributes'], 'Actuator', $id);
             }
+
+            $getBaseIDByParentID = function ($parentID) use ($configurator) {
+                foreach ($configurator as $otherDevice) {
+                    if (isset($otherDevice['create'])) {
+                        if ($otherDevice['parent'] == $parentID && isset($otherDevice['baseID'])) {
+                            return $otherDevice['baseID'];
+                        }
+                    }
+                }
+                return false;
+            };
+
+            // Try fixing missing baseIDs
+            foreach ($configurator as &$device) {
+                if (isset($device['address']) && !isset($device['baseID'])) {
+                    $this->SendDebug('NO BASEID', json_encode($device), 0);
+                    $parentID = $device['parent'];
+                    $baseID = false;
+                    while ($parentID != 0 && $baseID === false) {
+                        $baseID = $getBaseIDByParentID($parentID);
+                        $parentID = array_search($parentID, array_column($configurator, 'id'));
+                    }
+                    if ($baseID !== false) {
+                        $device['baseID'] = $baseID;
+                    }
+                }
+            }
             return $configurator;
         }
 
