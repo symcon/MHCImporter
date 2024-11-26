@@ -10,6 +10,7 @@ declare(strict_types=1);
             'Jalousie_1' =>  '{1463CAE7-C7D5-4623-8539-DD7ADA6E92A9}',
             'WindowContact' => '{432FF87E-4497-48D6-8ED9-EE7104D50001}',
             'RoomTemperatureControl' => '{432FF87E-4497-48D6-8ED9-EE7104A51003}',
+            'TemperatureHumidity' => '{432FF87E-4497-48D6-8ED9-EE7104A50402}',
         ];
         public function Create()
         {
