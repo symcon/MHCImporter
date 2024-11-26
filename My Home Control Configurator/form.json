@@ -19,12 +19,12 @@
                 {
                     "label": "BaseID",
                     "name": "baseID",
-                    "width": "200px"
+                    "width": "80px"
                 },
                 {
                     "label": "Address",
                     "name": "address",
-                    "width": "200px"
+                    "width": "80px"
                 },
                 {
                     "label": "Name",
