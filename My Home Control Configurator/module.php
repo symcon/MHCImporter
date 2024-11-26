@@ -8,6 +8,7 @@ declare(strict_types=1);
             'Switch_1' => '{FD46DA33-724B-489E-A931-C00BFD0166C9}',
             'Dimmer_1' => '{48909406-A2B9-4990-934F-28B9A80CD079}',
             'Jalousie_1' =>  '{1463CAE7-C7D5-4623-8539-DD7ADA6E92A9}',
+            'WindowContact' => '{432FF87E-4497-48D6-8ED9-EE7104D50001}',
         ];
         public function Create()
         {
