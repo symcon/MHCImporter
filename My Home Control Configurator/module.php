@@ -11,6 +11,7 @@ declare(strict_types=1);
             'WindowContact' => '{432FF87E-4497-48D6-8ED9-EE7104D50001}',
             'RoomTemperatureControl' => '{432FF87E-4497-48D6-8ED9-EE7104A51003}',
             'TemperatureHumidity' => '{432FF87E-4497-48D6-8ED9-EE7104A50402}',
+            'PIR' => '{432FF87E-4497-48D6-8ED9-EE7104F60201}',
         ];
         public function Create()
         {
