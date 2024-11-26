@@ -204,10 +204,10 @@ declare(strict_types=1);
                                 }
                                 $create[0]['configuration']['ReturnID'] = $returnID;
                             }
-                            // Override and make a nicer name
-                            $device['address'] = sprintf("%s (%d)", $attributes['Address_hex'], intval($attributes['Address']));
                             $device['create'] = $create;
                         }
+                        // Override and make a nicer name - even for unsuppoted ones
+                        $device['address'] = sprintf("%s (%d)", $attributes['Address_hex'], intval($attributes['Address']));
                     break;
 
                 default:
