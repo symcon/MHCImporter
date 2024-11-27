@@ -152,6 +152,16 @@ declare(strict_types=1);
                 $path[] = substr($pathStr, $i == 0 ? $slashIndices[$i] : $slashIndices[$i] + 1, $length);
             }
             $parentId = $this->createId(array_slice($path, 0, count($path) - 1), $configurator, $id);
+
+            // Fixup SensorAddr_hex and Address_hex of the length is 9 octets
+            // We may want to save this one byte for further use. 5 may mean F6 and 7 may mean A5 as EEP main type
+            if (isset($attributes['Address_hex']) && strlen($attributes['Address_hex']) == 9) {
+                $attributes['Address_hex'] = substr($attributes['Address_hex'], 1);
+            }
+            if (isset($attributes['SensorAddr_hex']) && strlen($attributes['SensorAddr_hex']) == 9) {
+                $attributes['SensorAddr_hex'] = substr($attributes['SensorAddr_hex'], 1);
+            }
+
             $device = [
                 'address' => $attributes['Address_hex'],
                 'name' => $path[count($path) - 1],
