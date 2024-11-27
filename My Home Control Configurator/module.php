@@ -92,10 +92,33 @@ declare(strict_types=1);
                     }
                     if ($baseID !== false) {
                         $device['baseID'] = $baseID;
+                        if (isset($device['create'])) {
+                            array_pop($device['create']);
+                            $this->addGateway($device);
+                        }
                     }
                 }
             }
             return $configurator;
+        }
+
+        private function addGateway(&$device)
+        {
+            if (isset($device['create'])) {
+                $fgw14 = isset($device['baseID']) && (hexdec($device['baseID']) & 0x0000FFFF) === 0;
+                $gateway = [
+                        'name' => $fgw14 ? 'FGW14 Gateway' : 'LAN Gateway',
+                        'moduleID' => '{A52FEFE9-7858-4B8E-A96E-26E15CB944F7}', // EnOcean Gateway;
+                        'configuration' => [
+                            'GatewayMode' => $fgw14 ? 4 : 3 // LAN Gateway
+                        ]
+                    ];
+                if ($fgw14) {
+                    $gateway['configuration']['BaseID'] = $device['baseID'];
+                }
+                $device['create'][] = $gateway;
+                $this->SendDebug('Create', json_encode($device['create']), 0);
+            }
         }
 
         public function UIImport($File)
@@ -226,21 +249,7 @@ declare(strict_types=1);
                 default:
                     break;
             }
-            if (isset($device['create'])) {
-                $fgw14 = isset($device['baseID']) && (hexdec($device['baseID']) & 0x0000FFFF) === 0;
-                $gateway = [
-                        'name' => $fgw14 ? 'FGW14 Gateway' : 'LAN Gateway',
-                        'moduleID' => '{A52FEFE9-7858-4B8E-A96E-26E15CB944F7}', // EnOcean Gateway;
-                        'configuration' => [
-                            'GatewayMode' => $fgw14 ? 4 : 3 // LAN Gateway
-                        ]
-                    ];
-                if ($fgw14) {
-                    $gateway['configuration']['BaseID'] = $device['baseID'];
-                }
-                $device['create'][] = $gateway;
-                $this->SendDebug('Create', json_encode($device['create']), 0);
-            }
+            $this->addGateway($device);
 
             $configurator[] = $device;
         }
