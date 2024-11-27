@@ -12,6 +12,9 @@ declare(strict_types=1);
             'RoomTemperatureControl' => '{432FF87E-4497-48D6-8ED9-EE7104A51003}',
             'TemperatureHumidity' => '{432FF87E-4497-48D6-8ED9-EE7104A50402}',
             'PIR' => '{432FF87E-4497-48D6-8ED9-EE7104F60201}',
+            'WindowHandle' => '{1C8D7E80-3ED1-4117-BB53-9C5F61B1BEF3}',
+            'Brightness' => '{AF827EB8-08A3-434D-9690-424AFF06C698}',
+            'EnergyMeter' => '{432FF87E-4497-48D6-8ED9-EE7104A51201}',
         ];
         public function Create()
         {
@@ -197,7 +200,7 @@ declare(strict_types=1);
                             $device['instanceID'] = $this->searchDevice(intval($attributes['Address']), $guid);
                             if (array_key_exists('SensorAddr_hex', $attributes)) {
                                 $returnID = $attributes['SensorAddr_hex'];
-                                if (strpos(substr($attributes['SensorAddr_hex'], 0, 4), substr($attributes['FullAddress_hex'], 0, 4)) !== false) {
+                                if (substr($attributes['SensorAddr_hex'], 0, 4) == substr($attributes['FullAddress_hex'], 0, 4)) {
                                     // We only want to use the last 2 characters from SensorAddr_hex
                                     // EF0010XX -> 000000XX
                                     $returnID = '000000' . substr($returnID, strlen($returnID) - 2, 4);
