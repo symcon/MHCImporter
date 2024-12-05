@@ -5,16 +5,27 @@ declare(strict_types=1);
     {
         public const GUID_MAP = [
             'PTMSwitchModule' => '{40C99CC9-EC04-49C8-BB9B-73E21B6FA265}',
+            'PTMSwitchModule-5' => '{40C99CC9-EC04-49C8-BB9B-73E21B6FA265}',
             'Switch_1' => '{FD46DA33-724B-489E-A931-C00BFD0166C9}',
+            'Switch_1-5' => '{FD46DA33-724B-489E-A931-C00BFD0166C9}',
+            'Switch_1-7' => '{FD46DA33-724B-489E-A931-C00BFD0166C9}',
             'Dimmer_1' => '{48909406-A2B9-4990-934F-28B9A80CD079}',
+            'Dimmer_1-7' => '{48909406-A2B9-4990-934F-28B9A80CD079}',
             'Jalousie_1' =>  '{1463CAE7-C7D5-4623-8539-DD7ADA6E92A9}',
             'WindowContact' => '{432FF87E-4497-48D6-8ED9-EE7104D50001}',
+            'WindowContact-6' => '{432FF87E-4497-48D6-8ED9-EE7104D50001}',
             'RoomTemperatureControl' => '{432FF87E-4497-48D6-8ED9-EE7104A51003}',
             'TemperatureHumidity' => '{432FF87E-4497-48D6-8ED9-EE7104A50402}',
-            'PIR' => '{432FF87E-4497-48D6-8ED9-EE7104F60201}',
+            'TemperatureHumidity-7' => '{432FF87E-4497-48D6-8ED9-EE7104A50402}',
+            'PIR-5' => '{432FF87E-4497-48D6-8ED9-EE7104F60201}',
+            'PIR-7' => '{432FF87E-4497-48D6-8ED9-EE7104A50703}',
             'WindowHandle' => '{1C8D7E80-3ED1-4117-BB53-9C5F61B1BEF3}',
             'Brightness' => '{AF827EB8-08A3-434D-9690-424AFF06C698}',
+            'Brightness-7' => '{AF827EB8-08A3-434D-9690-424AFF06C698}',
             'EnergyMeter' => '{432FF87E-4497-48D6-8ED9-EE7104A51201}',
+            'EnergyMeter-7' => '{432FF87E-4497-48D6-8ED9-EE7104A51201}',
+            'SmokeAlarm' => '{432FF87E-4497-48D6-8ED9-EE7104A53003}',
+            'SmokeAlarm-7' => '{432FF87E-4497-48D6-8ED9-EE7104A53003}',
         ];
         public function Create()
         {
@@ -177,30 +188,47 @@ declare(strict_types=1);
             $parentId = $this->createId(array_slice($path, 0, count($path) - 1), $configurator, $id);
 
             // Fixup SensorAddr_hex and Address_hex of the length is 9 octets
-            // We may want to save this one byte for further use. 5 may mean F6 and 7 may mean A5 as EEP main type
+            // We may want to save this one byte for further use. 5 may mean F6, 6 may mean D5 and 7 may mean A5 as EEP main type
+            $subtype = "";
             if (isset($attributes['Address_hex']) && strlen($attributes['Address_hex']) == 9) {
+                $subtype = substr($attributes['Address_hex'], 0, 1);
                 $attributes['Address_hex'] = substr($attributes['Address_hex'], 1);
             }
             if (isset($attributes['SensorAddr_hex']) && strlen($attributes['SensorAddr_hex']) == 9) {
+                $subtype = substr($attributes['SensorAddr_hex'], 0, 1);
                 $attributes['SensorAddr_hex'] = substr($attributes['SensorAddr_hex'], 1);
             }
+
+            $subtypeToString = function($subtype) {
+                switch ($subtype) {
+                    case '5':
+                        return 'F6-XX-XX';
+                    case '6':
+                        return 'D5-XX-XX';
+                    case '7':
+                        return 'A5-XX-XX';
+                    default:
+                        return $subtype;
+                }
+            };
 
             $device = [
                 'address' => $attributes['Address_hex'],
                 'name' => $path[count($path) - 1],
                 'parent' => $parentId,
                 'id' => ++$id,
-                'type' => $attributes['Type'],
+                'type' => $subtype ? sprintf("%s (%s)", $attributes['Type'], $subtypeToString($subtype)) : $attributes['Type'],
                 'instanceID' => 0,
             ];
             if (isset($attributes['FullAddress_hex'])) {
                 $device['baseID'] = strtoupper(dechex(hexdec($attributes['FullAddress_hex']) & 0xFFFFFF80));
             }
-            $supported = array_key_exists($attributes['Type'], self::GUID_MAP);
+            $typename = $subtype ? sprintf("%s-%s", $attributes['Type'], $subtype) : $attributes['Type'];
+            $supported = array_key_exists($typename, self::GUID_MAP);
             switch ($type) {
                 case 'Sensor':
                     if ($supported) {
-                        $guid = self::GUID_MAP[$attributes['Type']];
+                        $guid = self::GUID_MAP[$typename];
                         $device['create'] = [
                             [
                                 'moduleID' => $guid,
@@ -214,36 +242,37 @@ declare(strict_types=1);
                     }
                     break;
 
-                    case 'Actuator':
-                        if ($supported) {
-                            $guid = self::GUID_MAP[$attributes['Type']];
-                            $create =
+                case 'Actuator':
+                    if ($supported) {
+                        $guid = self::GUID_MAP[$typename];
+                        $create =
+                        [
                             [
-                                [
-                                    'moduleID' => $guid,
-                                    'location' => array_slice($path, 0, count($path) - 1),
-                                    'configuration' => [
-                                        'DeviceID' => intval($attributes['Address']),
-                                    ],
-                                ]
-                            ];
-                            if ($guid == '{FD46DA33-724B-489E-A931-C00BFD0166C9}' /*Eltako Switch*/) {
-                                $create[0]['configuration']['Mode'] = 1;
-                            }
-                            $device['instanceID'] = $this->searchDevice(intval($attributes['Address']), $guid);
-                            if (array_key_exists('SensorAddr_hex', $attributes)) {
-                                $returnID = $attributes['SensorAddr_hex'];
-                                if (substr($attributes['SensorAddr_hex'], 0, 4) == substr($attributes['FullAddress_hex'], 0, 4)) {
-                                    // We only want to use the last 2 characters from SensorAddr_hex
-                                    // EF0010XX -> 000000XX
-                                    $returnID = '000000' . substr($returnID, strlen($returnID) - 2, 4);
-                                }
-                                $create[0]['configuration']['ReturnID'] = $returnID;
-                            }
-                            $device['create'] = $create;
+                                'moduleID' => $guid,
+                                'location' => array_slice($path, 0, count($path) - 1),
+                                'configuration' => [
+                                    'DeviceID' => intval($attributes['Address']),
+                                ],
+                            ]
+                        ];
+                        // FIXME: We may only need to set this if $subtype is 7
+                        if ($guid == '{FD46DA33-724B-489E-A931-C00BFD0166C9}' /*Eltako Switch*/) {
+                            $create[0]['configuration']['Mode'] = 1;
                         }
-                        // Override and make a nicer name - even for unsuppoted ones
-                        $device['address'] = sprintf("%s (%d)", $attributes['Address_hex'], intval($attributes['Address']));
+                        $device['instanceID'] = $this->searchDevice(intval($attributes['Address']), $guid);
+                        if (array_key_exists('SensorAddr_hex', $attributes)) {
+                            $returnID = $attributes['SensorAddr_hex'];
+                            if (substr($attributes['SensorAddr_hex'], 0, 4) == substr($attributes['FullAddress_hex'], 0, 4)) {
+                                // We only want to use the last 2 characters from SensorAddr_hex
+                                // EF0010XX -> 000000XX
+                                $returnID = '000000' . substr($returnID, strlen($returnID) - 2, 4);
+                            }
+                            $create[0]['configuration']['ReturnID'] = $returnID;
+                        }
+                        $device['create'] = $create;
+                    }
+                    // Override and make a nicer name - even for unsuppoted ones
+                    $device['address'] = sprintf("%s (%d)", $attributes['Address_hex'], intval($attributes['Address']));
                     break;
 
                 default:
