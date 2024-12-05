@@ -26,6 +26,7 @@ declare(strict_types=1);
             'EnergyMeter-7' => '{432FF87E-4497-48D6-8ED9-EE7104A51201}',
             'SmokeAlarm' => '{432FF87E-4497-48D6-8ED9-EE7104A53003}',
             'SmokeAlarm-7' => '{432FF87E-4497-48D6-8ED9-EE7104A53003}',
+            'Valve_1' => '{7C25F5A6-ED34-4FB4-8A6D-D49DFE636CDC}',
         ];
         public function Create()
         {
