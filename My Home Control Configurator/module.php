@@ -258,7 +258,14 @@ declare(strict_types=1);
                         ];
                         // FIXME: We may only need to set this if $subtype is 7
                         if ($guid == '{FD46DA33-724B-489E-A931-C00BFD0166C9}' /*Eltako Switch*/) {
-                            $create[0]['configuration']['Mode'] = 1;
+                            $create[0]['configuration']['Mode'] = 1; /* A5-38-08 */
+                        }
+                        if ($guid == '{7C25F5A6-ED34-4FB4-8A6D-D49DFE636CDC}' /*Eltako FHK14*/) {
+                            $create[0]['configuration']['Mode'] = 2; /* GFVS */
+
+                            // MyHomeControl is not setting the SensorAddr* for those devices
+                            // Workaround this issue manually
+                            $create[0]['configuration']['ReturnID'] = sprintf("%08X", $attributes['Address']);
                         }
                         $device['instanceID'] = $this->searchDevice(intval($attributes['Address']), $guid);
                         if (array_key_exists('SensorAddr_hex', $attributes)) {
