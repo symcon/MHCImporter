@@ -272,7 +272,7 @@ declare(strict_types=1);
                         }
                         $device['create'] = $create;
                     }
-                    // Override and make a nicer name - even for unsuppoted ones
+                    // Override and make a nicer name - even for unsupported ones
                     $device['address'] = sprintf("%s (%d)", $attributes['Address_hex'], intval($attributes['Address']));
                     break;
 
