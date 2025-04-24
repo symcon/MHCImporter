@@ -271,12 +271,14 @@ declare(strict_types=1);
                             // we can set the Mode to 3 (GFVS with SR0x) and set the ThermostatID accordingly
                             $thermostatId = false;
                             foreach($allDevices['Sensor'] as $sensor) {
-                                // Remove the last segment after the final slash
-                                $ref1 = substr($sensor['@attributes']['Ref'], 0, strrpos($sensor['@attributes']['Ref'], '/'));
-                                $ref2 = substr($attributes['Ref'], 0, strrpos($attributes['Ref'], '/'));
-                                if ($ref1 == $ref2) {
-                                    $thermostatId = $sensor['@attributes']['Address'];
-                                    break;
+                                if ($sensor['@attributes']['Type'] == "RoomTemperatureControl") {
+                                    // Remove the last segment after the final slash
+                                    $ref1 = substr($sensor['@attributes']['Ref'], 0, strrpos($sensor['@attributes']['Ref'], '/'));
+                                    $ref2 = substr($attributes['Ref'], 0, strrpos($attributes['Ref'], '/'));
+                                    if ($ref1 == $ref2) {
+                                        $thermostatId = $sensor['@attributes']['Address'];
+                                        break;
+                                    }
                                 }
                             }
                             if ($thermostatId) {
