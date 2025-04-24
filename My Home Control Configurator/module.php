@@ -66,20 +66,20 @@ declare(strict_types=1);
             if (strlen($File) == 0) {
                 return [];
             }
+
             $xml = simplexml_load_string(base64_decode($File), null, LIBXML_NOCDATA);
             $array = json_decode(json_encode($xml), true);
             if (!array_key_exists('DeviceAddresses', $array)) {
                 return [];
             }
 
-            $array = json_decode(json_encode($xml), true);
             $configurator = [];
             $id = 1;
             foreach ($array['DeviceAddresses']['Sensor'] as $sensor) {
-                $this->createDevice($configurator, $sensor['@attributes'], 'Sensor', $id);
+                $this->createDevice($configurator, $sensor['@attributes'], 'Sensor', $id, $array['DeviceAddresses']);
             }
             foreach ($array['DeviceAddresses']['Actuator'] as $actuator) {
-                $this->createDevice($configurator, $actuator['@attributes'], 'Actuator', $id);
+                $this->createDevice($configurator, $actuator['@attributes'], 'Actuator', $id, $array['DeviceAddresses']);
             }
 
             $getBaseIDByParentID = function ($parentID) use ($configurator) {
@@ -162,7 +162,7 @@ declare(strict_types=1);
         }
 
 
-        private function createDevice(&$configurator, $attributes, String $type, &$id)
+        private function createDevice(&$configurator, $attributes, String $type, &$id, array $allDevices)
         {
             $parenthesisCount = 0;
             $pathStr = $attributes['Ref'];
@@ -266,6 +266,23 @@ declare(strict_types=1);
                             // MyHomeControl is not setting the SensorAddr* for those devices
                             // Workaround this issue manually
                             $create[0]['configuration']['ReturnID'] = sprintf("%08X", $attributes['Address']);
+
+                            // If we want find a matching RoomTemperatureControl device
+                            // we can set the Mode to 3 (GFVS with SR0x) and set the ThermostatID accordingly
+                            $thermostatId = false;
+                            foreach($allDevices['Sensor'] as $sensor) {
+                                // Remove the last segment after the final slash
+                                $ref1 = substr($sensor['@attributes']['Ref'], 0, strrpos($sensor['@attributes']['Ref'], '/'));
+                                $ref2 = substr($attributes['Ref'], 0, strrpos($attributes['Ref'], '/'));
+                                if ($ref1 == $ref2) {
+                                    $thermostatId = $sensor['@attributes']['Address'];
+                                    break;
+                                }
+                            }
+                            if ($thermostatId) {
+                                $create[0]['configuration']['Mode'] = 3; /* GFVS with SR0x */
+                                $create[0]['configuration']['ThermostatID'] = sprintf("%08X", $thermostatId);
+                            }
                         }
                         $device['instanceID'] = $this->searchDevice(intval($attributes['Address']), $guid);
                         if (array_key_exists('SensorAddr_hex', $attributes)) {
