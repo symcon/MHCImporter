@@ -24,8 +24,8 @@ declare(strict_types=1);
             'Brightness-7' => '{AF827EB8-08A3-434D-9690-424AFF06C698}',
             'EnergyMeter' => '{432FF87E-4497-48D6-8ED9-EE7104A51201}',
             'EnergyMeter-7' => '{432FF87E-4497-48D6-8ED9-EE7104A51201}',
-            'SmokeAlarm' => '{432FF87E-4497-48D6-8ED9-EE7104A53003}',
-            'SmokeAlarm-7' => '{432FF87E-4497-48D6-8ED9-EE7104A53003}',
+            'SmokeAlarm' => '{D2F0769E-0BF7-804A-7982-22292DB7C268}',
+            'SmokeAlarm-7' => '{D2F0769E-0BF7-804A-7982-22292DB7C268}',
             'Valve_1' => '{7C25F5A6-ED34-4FB4-8A6D-D49DFE636CDC}',
         ];
         public function Create()
