@@ -257,6 +257,9 @@ declare(strict_types=1);
                                 ],
                             ]
                         ];
+                        if ($guid == '{1463CAE7-C7D5-4623-8539-DD7ADA6E92A9}' /*Eltako Shutter*/) {
+                            $create[0]['configuration']['EmulateStatus'] = false; /* Interferes with ShutterControl */
+                        }
                         // FIXME: We may only need to set this if $subtype is 7
                         if ($guid == '{FD46DA33-724B-489E-A931-C00BFD0166C9}' /*Eltako Switch*/) {
                             $create[0]['configuration']['Mode'] = 1; /* A5-38-08 */
