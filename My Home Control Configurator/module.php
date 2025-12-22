@@ -107,7 +107,7 @@ declare(strict_types=1);
                         $device['baseID'] = $baseID;
                         if (isset($device['create'])) {
                             array_pop($device['create']);
-                            $this->addGateway($device);
+                            $this->addGatewayIO($device);
                         }
                     }
                 }
@@ -115,9 +115,10 @@ declare(strict_types=1);
             return $configurator;
         }
 
-        private function addGateway(&$device)
+        private function addGatewayIO(&$device)
         {
             if (isset($device['create'])) {
+                // Gateway
                 $fgw14 = isset($device['baseID']) && (hexdec($device['baseID']) & 0x0000FFFF) === 0;
                 $gateway = [
                         'name' => $fgw14 ? 'FGW14 Gateway' : 'LAN Gateway',
@@ -130,6 +131,10 @@ declare(strict_types=1);
                     $gateway['configuration']['BaseID'] = $device['baseID'];
                 }
                 $device['create'][] = $gateway;
+                // I/O
+                $device['create'][] = [
+                    'moduleID' => '{6DC3D946-0D31-450F-A8C6-C42DB8D7D4F1}', // Serial Port
+                ];
                 $this->SendDebug('Create', json_encode($device['create']), 0);
             }
         }
@@ -309,7 +314,7 @@ declare(strict_types=1);
                 default:
                     break;
             }
-            $this->addGateway($device);
+            $this->addGatewayIO($device);
 
             $configurator[] = $device;
         }
