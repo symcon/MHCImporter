@@ -134,6 +134,7 @@ declare(strict_types=1);
                 // I/O
                 $device['create'][] = [
                     'moduleID' => '{6DC3D946-0D31-450F-A8C6-C42DB8D7D4F1}', // Serial Port
+                    'configuration' => new stdClass(),
                 ];
                 $this->SendDebug('Create', json_encode($device['create']), 0);
             }
