@@ -107,6 +107,7 @@ declare(strict_types=1);
                         $device['baseID'] = $baseID;
                         if (isset($device['create'])) {
                             array_pop($device['create']);
+                            array_pop($device['create']);
                             $this->addGatewayIO($device);
                         }
                     }
