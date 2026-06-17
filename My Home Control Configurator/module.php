@@ -20,6 +20,7 @@ declare(strict_types=1);
             'PIR-5' => '{432FF87E-4497-48D6-8ED9-EE7104F60201}',
             'PIR-7' => '{432FF87E-4497-48D6-8ED9-EE7104A50703}',
             'WindowHandle' => '{1C8D7E80-3ED1-4117-BB53-9C5F61B1BEF3}',
+            'WindowHandle-7' => '{1F3E63B6-F354-44FF-98DE-BEB63F36310C}',
             'Brightness' => '{AF827EB8-08A3-434D-9690-424AFF06C698}',
             'Brightness-7' => '{AF827EB8-08A3-434D-9690-424AFF06C698}',
             'EnergyMeter' => '{432FF87E-4497-48D6-8ED9-EE7104A51201}',
